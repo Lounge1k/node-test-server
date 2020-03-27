@@ -1,7 +1,8 @@
 # Dockerfile extending the generic Node image with application files for a
 # single application.
-FROM gcr.io/google_appengine/nodejs
-COPY . /app/
+FROM node:current-slim
+WORKDIR /usr/src/app
+COPY package.json .
 # You have to specify "--unsafe-perm" with npm install
 # when running as root.  Failing to do this can cause
 # install to appear to succeed even if a preinstall
@@ -13,4 +14,6 @@ RUN npm install --unsafe-perm || \
   ((if [ -f npm-debug.log ]; then \
   cat npm-debug.log; \
   fi) && false)
-CMD npm start
+EXPOSE 8080
+CMD [ "npm", "start" ]
+COPY . .
